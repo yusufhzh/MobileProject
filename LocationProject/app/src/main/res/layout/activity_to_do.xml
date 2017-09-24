@@ -1,3 +1,11 @@
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/map"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+
+<!--
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/LinearLayout1"
@@ -57,7 +65,6 @@
         android:layout_height="wrap_content"
         tools:listitem="@layout/row_list_to_do"
         android:padding="6dip" >
-
     </ListView>
-
 </LinearLayout>
+-->

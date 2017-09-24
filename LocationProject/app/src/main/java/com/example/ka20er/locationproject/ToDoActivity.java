@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +15,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -41,7 +47,15 @@ import java.util.concurrent.TimeUnit;
 
 import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
 
-public class ToDoActivity extends Activity {
+import com.google.android.gms.maps.SupportMapFragment;
+
+/*
+This code makes use of the Google Maps API and is directly sourced
+from the "Map With Marker" example code.
+Available at https://developers.google.com/maps/documentation/android-api/map-with-marker
+ */
+
+public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallback { //extends Activity {
     String name;
     String latitude;
     String longitude;
@@ -86,15 +100,19 @@ public class ToDoActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do);
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        //mapFragment.getMapAsync(this);
+
         name = getIntent().getStringExtra("passName");
         latitude = getIntent().getStringExtra("passLat");
         longitude = getIntent().getStringExtra("passLong");
         timeStamp = getIntent().getStringExtra("passCoordTime");
 
-        mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
+        //mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
 
         // Initialize the progress bar
-        mProgressBar.setVisibility(ProgressBar.GONE);
+        //mProgressBar.setVisibility(ProgressBar.GONE);
 
         try {
             // Create the Mobile Service Client instance, using the provided
@@ -116,8 +134,7 @@ public class ToDoActivity extends Activity {
                 }
             });
 
-            // Get the Mobile Service Table instance to use
-
+            /*
             mToDoTable = mClient.getTable(ToDoItem.class);
 
             // Offline Sync
@@ -136,6 +153,7 @@ public class ToDoActivity extends Activity {
 
             // Load the items from the Mobile Service
             refreshItemsFromTable();
+            */
 
         } catch (MalformedURLException e) {
             createAndShowDialog(new Exception("There was an error creating the Mobile Service. Verify the URL"), "Error");
@@ -502,5 +520,18 @@ public class ToDoActivity extends Activity {
 
             return resultFuture;
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        // Add a marker in Sydney, Australia,
+        // and move the map's camera to the same location.
+        LatLng sydney = new LatLng(-33.852, 151.211);
+        googleMap.addMarker(new MarkerOptions().position(sydney)
+                .title("Marker in Sydney"));
+        LatLng melbourne = new LatLng(-37.8136, 144.9631);
+        googleMap.addMarker(new MarkerOptions().position(melbourne)
+                .title("Marker in Melbourne"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(melbourne));
     }
 }
