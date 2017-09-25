@@ -1,9 +1,49 @@
+<!--
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/map"
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" />
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#71BCFA"
+    android:padding="6dip"  >
+
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="200dip"
+        android:layout_height="200dip" />
+
+
+    <TextView
+    android:id="@+id/textNewToDo"
+    android:layout_width="0dip"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:ems="10" />
+
+    <Button
+    android:id="@+id/buttonAddToDo"
+    android:layout_width="64dip"
+    android:layout_height="wrap_content"
+    android:onClick="addItem"
+    android:text="@string/add_button_text" />
+
+    <ListView
+        android:id="@+id/listViewToDo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/row_list_to_do"
+        android:padding="6dip" >
+    </ListView>
+</LinearLayout>
+
 
 <!--
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -48,7 +88,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10" />
-
 
         <Button
             android:id="@+id/buttonAddToDo"

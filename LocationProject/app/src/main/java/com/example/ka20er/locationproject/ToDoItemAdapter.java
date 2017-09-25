@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
  * Adapter to bind a ToDoItem List to a view
@@ -49,6 +51,14 @@ public class ToDoItemAdapter extends ArrayAdapter<ToDoItem> {
         checkBox.setText(currentItem.getText());
         checkBox.setChecked(false);
         checkBox.setEnabled(true);
+
+        // new
+        //ToDoActivity.itemList.add(currentItem.getText());
+        if (!currentItem.getText().equals("")) {
+            String[] split = currentItem.getText().split(",");
+            LatLng loc = new LatLng(Double.parseDouble(split[1]), Double.parseDouble(split[2]));
+            ToDoActivity.worldMap.addMarker(new MarkerOptions().position(loc).title(split[0]));
+        }
 
         checkBox.setOnClickListener(new View.OnClickListener() {
 

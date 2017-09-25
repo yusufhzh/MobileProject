@@ -31,6 +31,7 @@ import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.microsoft.windowsazure.mobileservices.table.query.ExecutableQuery;
 import com.microsoft.windowsazure.mobileservices.table.sync.MobileServiceSyncContext;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.ColumnDataType;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.MobileServiceLocalStoreException;
@@ -48,11 +49,15 @@ import java.util.concurrent.TimeUnit;
 import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
 
 import com.google.android.gms.maps.SupportMapFragment;
+import java.util.*;
+import com.microsoft.windowsazure.mobileservices.MobileServiceList;
 
 /*
 This code makes use of the Google Maps API and is directly sourced
 from the "Map With Marker" example code.
 Available at https://developers.google.com/maps/documentation/android-api/map-with-marker
+
+It also uses the ToDo list example referred to in the workshops.
  */
 
 public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallback { //extends Activity {
@@ -92,6 +97,17 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private ProgressBar mProgressBar;
 
+    //NEW
+    //private ArrayList<ToDoItem> itemList;
+    //private List<ToDoItem> itemList;
+    //public static ArrayList itemList = new ArrayList();
+    public static ArrayList<String> itemList = new ArrayList();
+
+    public static GoogleMap worldMap;
+
+    //MobileServiceList<ToDoItem> itemList;
+    //itemList =
+
     /**
      * Initializes the activity
      */
@@ -102,7 +118,7 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        //mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(this);
 
         name = getIntent().getStringExtra("passName");
         latitude = getIntent().getStringExtra("passLat");
@@ -134,11 +150,19 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
 
-            /*
-            mToDoTable = mClient.getTable(ToDoItem.class);
+            //mToDoTable = mClient.getTable(ToDoItem.class);
 
-            // Offline Sync
-            //mToDoTable = mClient.getSyncTable("ToDoItem", ToDoItem.class);
+            mToDoTable = mClient.getTable(ToDoItem.class);
+            //itemList = refreshItemsFromMobileServiceTable();
+
+            //itemList = (ArrayList<ToDoItem>) refreshItemsFromMobileServiceTable();
+
+            //itemList = mToDoTable.execute().get();
+            //itemList = mToDoTable.where().field("complete").eq(false).execute().get();
+
+            //mToDoTable.
+
+            //itemList.add(entity); // new code
 
             //Init local storage
             initLocalStore().get();
@@ -148,12 +172,12 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             // Create an adapter to bind the items with the view
             mAdapter = new ToDoItemAdapter(this, R.layout.row_list_to_do);
+
             ListView listViewToDo = (ListView) findViewById(R.id.listViewToDo);
             listViewToDo.setAdapter(mAdapter);
 
             // Load the items from the Mobile Service
             refreshItemsFromTable();
-            */
 
         } catch (MalformedURLException e) {
             createAndShowDialog(new Exception("There was an error creating the Mobile Service. Verify the URL"), "Error");
@@ -314,6 +338,8 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
                             for (ToDoItem item : results) {
                                 mAdapter.add(item);
                                 Log.i("AZURE DATA",item.toString());
+                                //new
+                                itemList.add(item.getText());
                             }
                         }
                     });
@@ -524,14 +550,40 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        worldMap = googleMap;
+
+        /*
+        Log.d("hello", "world");
+        for (String s: itemList) {
+            if (!s.equals("")) {
+                String split[] = s.split(",");
+                LatLng sydney = new LatLng(Double.parseDouble(split[1]), Double.parseDouble(split[2]));
+                googleMap.addMarker(new MarkerOptions().position(sydney)
+                        .title("Marker in Sydney"));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            }
+        }
+        */
+        //itemList.
+        //Log.d("debug", "called");
+        /*
+        for (ToDoItem i: itemList) {
+            Log.d("debug", i.getText());
+            //String split[] = i.getText().split(",");
+            //LatLng loc = new LatLng(Double.parseDouble(split[1]), Double.parseDouble(split[2]));
+            //googleMap.addMarker(new MarkerOptions().position(loc).title(split[0]));
+        }
+        */
         // Add a marker in Sydney, Australia,
         // and move the map's camera to the same location.
+        /*
         LatLng sydney = new LatLng(-33.852, 151.211);
         googleMap.addMarker(new MarkerOptions().position(sydney)
                 .title("Marker in Sydney"));
-        LatLng melbourne = new LatLng(-37.8136, 144.9631);
+        LatLng melbourne = new LatLng(0, 0);
         googleMap.addMarker(new MarkerOptions().position(melbourne)
-                .title("Marker in Melbourne"));
+                .title("Null"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(melbourne));
+        */
     }
 }
