@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -58,6 +60,7 @@ public class ToDoItemAdapter extends ArrayAdapter<ToDoItem> {
             String[] split = currentItem.getText().split(",");
             LatLng loc = new LatLng(Double.parseDouble(split[1]), Double.parseDouble(split[2]));
             ToDoActivity.worldMap.addMarker(new MarkerOptions().position(loc).title(split[0]));
+            ToDoActivity.worldMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
         }
 
         checkBox.setOnClickListener(new View.OnClickListener() {
@@ -73,8 +76,6 @@ public class ToDoItemAdapter extends ArrayAdapter<ToDoItem> {
                 }
             }
         });
-
         return row;
     }
-
 }

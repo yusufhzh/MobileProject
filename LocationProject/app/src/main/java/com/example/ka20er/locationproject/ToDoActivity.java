@@ -150,19 +150,7 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
 
-            //mToDoTable = mClient.getTable(ToDoItem.class);
-
             mToDoTable = mClient.getTable(ToDoItem.class);
-            //itemList = refreshItemsFromMobileServiceTable();
-
-            //itemList = (ArrayList<ToDoItem>) refreshItemsFromMobileServiceTable();
-
-            //itemList = mToDoTable.execute().get();
-            //itemList = mToDoTable.where().field("complete").eq(false).execute().get();
-
-            //mToDoTable.
-
-            //itemList.add(entity); // new code
 
             //Init local storage
             initLocalStore().get();
@@ -551,39 +539,5 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         worldMap = googleMap;
-
-        /*
-        Log.d("hello", "world");
-        for (String s: itemList) {
-            if (!s.equals("")) {
-                String split[] = s.split(",");
-                LatLng sydney = new LatLng(Double.parseDouble(split[1]), Double.parseDouble(split[2]));
-                googleMap.addMarker(new MarkerOptions().position(sydney)
-                        .title("Marker in Sydney"));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-            }
-        }
-        */
-        //itemList.
-        //Log.d("debug", "called");
-        /*
-        for (ToDoItem i: itemList) {
-            Log.d("debug", i.getText());
-            //String split[] = i.getText().split(",");
-            //LatLng loc = new LatLng(Double.parseDouble(split[1]), Double.parseDouble(split[2]));
-            //googleMap.addMarker(new MarkerOptions().position(loc).title(split[0]));
-        }
-        */
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
-        /*
-        LatLng sydney = new LatLng(-33.852, 151.211);
-        googleMap.addMarker(new MarkerOptions().position(sydney)
-                .title("Marker in Sydney"));
-        LatLng melbourne = new LatLng(0, 0);
-        googleMap.addMarker(new MarkerOptions().position(melbourne)
-                .title("Null"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(melbourne));
-        */
     }
 }
