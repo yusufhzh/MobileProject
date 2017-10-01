@@ -1,5 +1,14 @@
 package com.example.ka20er.locationproject;
 
+/*
+* Created By: Yusuf Hamzah (147251)
+* Purpose	: 
+* + Provide basic user-interface.
+* + Accessing sensor device in the Android OS. 
+* + Retrieve coordinates at certain time interval and push the data to Azure synchornization sheet.
+* Updated   : 1st October 2017 
+*/
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -42,7 +51,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+		/*
+		*   Initialize the forms of user interface
+		*/
+		setContentView(R.layout.activity_main);
         etName = (EditText) findViewById(R.id.etName);
         tvLat = (TextView) findViewById(R.id.tvLatitude);
         tvLong = (TextView) findViewById(R.id.tvLongitude);
@@ -61,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+		/*
+		*   Retrieve the devce coordinate from the in-built sensor. Put a time-stamp 
+		*/
         coordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+		/*
+		*   Pass the custom username, retrieved coordinates and timestamp to Azure Synchronization Activity Sheet
+		*/
         syncButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,7 +114,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void getLocation() {
         final LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
+		/*
+		*   Perform automatic sensor retrieval request when location changes. The setting is 0 meter and every 5 seconds
+		*/
         final LocationListener locationListener = new LocationListener() {
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -125,6 +145,10 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+		
+		/*
+		*   Check whether the andorid OS build version is above 23. If it is, request for permission to access GPS sensor. 
+		*/
         if (Build.VERSION.SDK_INT < 23) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_FOR_UPDATES, locationListener);
         } else {
