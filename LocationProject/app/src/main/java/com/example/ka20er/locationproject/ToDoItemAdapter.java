@@ -54,8 +54,8 @@ public class ToDoItemAdapter extends ArrayAdapter<ToDoItem> {
         checkBox.setChecked(false);
         checkBox.setEnabled(true);
 
-        // new
-        //ToDoActivity.itemList.add(currentItem.getText());
+        /* Break up the row into username, latitude and longitude
+         * and place a marker on the Google Map. */
         if (!currentItem.getText().equals("")) {
             String[] split = currentItem.getText().split(",");
             LatLng loc = new LatLng(Double.parseDouble(split[1]), Double.parseDouble(split[2]));

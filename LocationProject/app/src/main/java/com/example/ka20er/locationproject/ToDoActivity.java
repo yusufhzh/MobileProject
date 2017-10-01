@@ -1,7 +1,6 @@
 package com.example.ka20er.locationproject;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -15,11 +14,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -31,7 +27,6 @@ import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.table.query.ExecutableQuery;
 import com.microsoft.windowsazure.mobileservices.table.sync.MobileServiceSyncContext;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.ColumnDataType;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.MobileServiceLocalStoreException;
@@ -50,7 +45,6 @@ import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperati
 
 import com.google.android.gms.maps.SupportMapFragment;
 import java.util.*;
-import com.microsoft.windowsazure.mobileservices.MobileServiceList;
 
 /*
 This code makes use of the Google Maps API and is directly sourced
@@ -60,11 +54,11 @@ Available at https://developers.google.com/maps/documentation/android-api/map-wi
 It also uses the ToDo list example referred to in the workshops.
  */
 
-public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallback { //extends Activity {
-    String name;
+public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallback {
+    String name; // the name of the user.
     String latitude;
     String longitude;
-    String timeStamp;
+    String timeStamp; // time of last sensor reading
 
     /**
      * Mobile Service Client reference
@@ -75,12 +69,6 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Mobile Service Table used to access data
      */
     private MobileServiceTable<ToDoItem> mToDoTable;
-
-    //Offline Sync
-    /**
-     * Mobile Service Table used to access and Sync data
-     */
-    //private MobileServiceSyncTable<ToDoItem> mToDoTable;
 
     /**
      * Adapter to sync the items list with the view
@@ -97,16 +85,15 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private ProgressBar mProgressBar;
 
-    //NEW
-    //private ArrayList<ToDoItem> itemList;
-    //private List<ToDoItem> itemList;
-    //public static ArrayList itemList = new ArrayList();
+    /**
+     * Used to keep track of all items retrieved from the database.
+     */
     public static ArrayList<String> itemList = new ArrayList();
 
+    /**
+     * Provides global access to the Google Map from outside the class.
+     */
     public static GoogleMap worldMap;
-
-    //MobileServiceList<ToDoItem> itemList;
-    //itemList =
 
     /**
      * Initializes the activity
@@ -116,28 +103,23 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do);
 
+        // Used to ensure onMapReady will be called when the map has loaded.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        // Retrieves data to create a new record.
         name = getIntent().getStringExtra("passName");
         latitude = getIntent().getStringExtra("passLat");
         longitude = getIntent().getStringExtra("passLong");
         timeStamp = getIntent().getStringExtra("passCoordTime");
 
-        //mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
-
-        // Initialize the progress bar
-        //mProgressBar.setVisibility(ProgressBar.GONE);
-
         try {
             // Create the Mobile Service Client instance, using the provided
-
             // Mobile Service URL and key
             mClient = new MobileServiceClient(
-                    //"https://testdavidapp.azurewebsites.net",
-                                    "https://mobilecompapp.azurewebsites.net",
-                    this).withFilter(new ProgressFilter());
+                        "https://mobilecompapp.azurewebsites.net",
+                        this).withFilter(new ProgressFilter());
 
             // Extend timeout from default of 10s to 20s
             mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
@@ -150,6 +132,7 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
 
+            // Provides access to the database table.
             mToDoTable = mClient.getTable(ToDoItem.class);
 
             //Init local storage
@@ -352,18 +335,6 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
                 eq(val(false)).execute().get();
     }
 
-    //Offline Sync
-    /**
-     * Refresh the list with the items in the Mobile Service Sync Table
-     */
-    /*private List<ToDoItem> refreshItemsFromMobileServiceTableSyncTable() throws ExecutionException, InterruptedException {
-        //sync the data
-        sync().get();
-        Query query = QueryOperations.field("complete").
-                eq(val(false));
-        return mToDoTable.read(query).get();
-    }*/
-
     /**
      * Initialize local storage
      * @return
@@ -406,30 +377,6 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         return runAsyncTask(task);
     }
-
-    //Offline Sync
-    /**
-     * Sync the current context and the Mobile Service Sync Table
-     * @return
-     */
-    /*
-    private AsyncTask<Void, Void, Void> sync() {
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    MobileServiceSyncContext syncContext = mClient.getSyncContext();
-                    syncContext.push().get();
-                    mToDoTable.pull(null).get();
-                } catch (final Exception e) {
-                    createAndShowDialogFromTask(e, "Error");
-                }
-                return null;
-            }
-        };
-        return runAsyncTask(task);
-    }
-    */
 
     /**
      * Creates a dialog and shows it
@@ -495,7 +442,6 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private class ProgressFilter implements ServiceFilter {
-
         @Override
         public ListenableFuture<ServiceFilterResponse> handleRequest(ServiceFilterRequest request, NextServiceFilterCallback nextServiceFilterCallback) {
 
@@ -536,6 +482,10 @@ public class ToDoActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    /**
+     * This allows us to know when the map has
+     * finished loading so we can add location markers.
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         worldMap = googleMap;
